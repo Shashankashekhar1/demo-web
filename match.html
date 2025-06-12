@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Match Your Vibes 💞</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta property="og:title" content="💖 Bugged Vibe Test" />
+<meta property="og:description" content="How strong is your friendship vibe? Try now!" />
+<meta property="og:image" content="https://yourdomain.com/preview.jpg" />
+<meta property="og:url" content="https://yourdomain.com" />
+<meta name="twitter:card" content="summary_large_image" />
+
+</head>
+<body>
+  <div class="container">
+    <h2>Match your answers with your friend!</h2>
+    <div id="question-box">
+      <p id="question"></p>
+      <input type="text" id="answer" placeholder="Your answer..." />
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+    <div id="result-box" style="display:none; text-align: center;">
+  <h3>🎉 Your Bond Score:</h3>
+  <div id="emoji-meter" style="font-size: 40px; margin: 10px 0;"></div>
+  <p id="match-score" style="font-size: 20px;"></p>
+
+  <button onclick="replayQuiz()">🔄 Try Another Friend</button>
+  <br/><br/>
+  <button onclick="shareResult()">📲 Share on WhatsApp</button>
+</div>
+
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+const matchId = urlParams.get("matchId");
+
+if (!matchId || !localStorage.getItem("match_" + matchId)) {
+  alert("Invalid or expired match link.");
+  window.location.href = "index.html";
+}
+
+const friendData = JSON.parse(localStorage.getItem("match_" + matchId));
+const friendAnswers = friendData.answers;
+const questions = friendData.questions;
+
+    const answers = [];
+    let current = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("question").innerText = questions[current];
+        document.getElementById("answer").value = "";
+      } else {
+        calculateMatch();
+      }
+    }
+
+    function nextQuestion() {
+      const ans = document.getElementById("answer").value.trim().toLowerCase();
+      if (!ans) return alert("Please answer before continuing.");
+      answers.push(ans);
+      current++;
+      showQuestion();
+    }
+
+    function calculateMatch() {
+      let matchCount = 0;
+      for (let i = 0; i < friendAnswers.length; i++) {
+        if (answers[i] === friendAnswers[i].toLowerCase()) matchCount++;
+      }
+
+      const percent = Math.floor((matchCount / questions.length) * 100);
+      document.getElementById("question-box").style.display = "none";
+      document.getElementById("result-box").style.display = "block";
+      document.getElementById("match-score").innerText = `❤️ ${percent}% match with your friend!`;
+     // 🎯 Emoji Bond Meter
+  let emoji = "😐";
+  if (percent >= 90) emoji = "💖💖💖 Soulmates!";
+  else if (percent >= 70) emoji = "💘 Super Bond!";
+  else if (percent >= 50) emoji = "🤝 Decent Friends";
+  else emoji = "💔 Needs More Vibes 😢";
+
+  document.getElementById("emoji-meter").innerText = emoji;
+
+  // 💾 Save score for share button
+  window.lastScore = percent;
+}
+function shareResult() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const matchId = urlParams.get("matchId");
+  const link = `https://yourdomain.com/match.html?matchId=${matchId}`;
+
+  const message = `🔥 I got ${window.lastScore}% vibe match! Try yours with me: ${link} 💘`;
+  const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+  window.open(waLink, "_blank");
+}
+
+function replayQuiz() {
+  window.location.href = "index.html"; // change to your starting page
+}
+
+
+    showQuestion();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Bond Score 💘</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2 id="result-title"></h2>
+    <p id="bond-score"></p>
+    <p>💌 Share this with your bestie and ask them to take the test too!</p>
+    <button onclick="shareOnWhatsApp()">📤 Share on WhatsApp</button>
+    <br/><br/>
+    <button onclick="restart()">🔁 Restart Test</button>
+    <!-- Add a button -->
+
+  </div>
+
+  <script>
+    const name = localStorage.getItem("username") || "Someone";
+    const answers = JSON.parse(localStorage.getItem("quizAnswers")) || [];
+
+    // Basic logic to generate a fake bond ₹ score
+    const randomBase = Math.floor(Math.random() * 50000) + 1000;
+    const bonus = answers.length * 2000;
+    const bondValue = randomBase + bonus;
+
+    document.getElementById("result-title").innerText = `${name}, your emotional bond is...`;
+    document.getElementById("bond-score").innerText = `💸 ₹${bondValue.toLocaleString()} 💸`;
+
+    function shareOnWhatsApp() {
+      const msg = `💘 My Bugged ₹1000 Love Test result: ₹${bondValue} 💸\nTake the test and check your vibe with me!\n👉 yourdomain.com`;
+      const waUrl = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank');
+    }
+
+    function restart() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+    </script>
+  <script src="script.js"></script>
+</body>
+</html>

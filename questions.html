@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Answer the Vibe Test</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2 id="greeting"></h2>
+    <div id="question-box">
+      <p id="question"></p>
+      <input type="text" id="answer" placeholder="Type your answer..." />
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name') || 'Friend';
+    document.getElementById("greeting").innerText = `${name}, answer these vibes…`;
+
+    const questions = [
+      "When you’re sad, who’s the first person you call?",
+      "If your best friend disappears for a week, what do you do?",
+      "What's your definition of true friendship?",
+      "When did you last laugh so hard you cried?",
+      "If your heart was a currency, how much would your friend own?"
+    ];
+
+    const answers = [];
+    let current = 0;
+
+    function showQuestion() {
+      if (current < questions.length) {
+        document.getElementById("question").innerText = questions[current];
+        document.getElementById("answer").value = "";
+      } else {
+        // Save answers and redirect
+        localStorage.setItem("quizAnswers", JSON.stringify(answers));
+        localStorage.setItem("username", name);
+        window.location.href = "result.html";
+      }
+    }
+
+    function nextQuestion() {
+      const ans = document.getElementById("answer").value.trim();
+      if (!ans) return alert("Please answer before continuing.");
+      answers.push({ question: questions[current], answer: ans });
+      current++;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
